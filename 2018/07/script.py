@@ -15,13 +15,14 @@ if __name__ == '__main__':
         prior = match_group['prior']
         posterior = match_group['posterior']
 
-        dependencies[prior].add(posterior)
-        dependencies[posterior]
+        dependencies[posterior].add(prior)
+        dependencies[prior]
 
     steps = []
     while dependencies:
         # Find all steps whose dependencies are completed
         possible_steps = [step for step, dependency_set in dependencies.items() if len(dependency_set) == 0]
+
         # Select the lowest step alphabetically
         next_step = sorted(possible_steps)[0]
         steps.append(next_step)
