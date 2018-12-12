@@ -27,10 +27,14 @@ if __name__ == '__main__':
     max_cell_size = -1
 
     for y_ix in range(len(power_cells)):
+        row_sums = [0] * (y_size - y_ix)
         print(f'{datetime.now()}: {y_ix}')
         for x_ix in range(len(power_cells[y_ix])):
             for size in range(min([y_size - y_ix + 1, x_size - x_ix + 1])):
-                cell_power = sum([sum(grid[y_ix + i][x_ix:x_ix + size]) for i in range(size)])
+                for i in range(size):
+                    row_sums[i] += grid[y_ix + i][x_ix + i]
+
+                cell_power = sum(row_sums)
 
                 if cell_power > max_cell_pow:
                     max_cell_pow = cell_power
