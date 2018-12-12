@@ -14,12 +14,11 @@ if __name__ == '__main__':
     state = '.' * left_pad + initial_state + '.' * right_pad  # add empty plants in the beginning
     pot_zero_ix = left_pad
 
-    # generation_count = 50000000000
-    generation_count = 20
+    generation_count = 10_000
     for gen_ix in range(generation_count):
-        print(f'{str(gen_ix).zfill(2)}: {state}')
-        # if gen_ix % 1_000 == 0:
-        #     print(f'{datetime.now()}: {gen_ix}: {len(state)}')
+        # print(f'{str(gen_ix).zfill(2)}: {state}')
+        if gen_ix % 10_000 == 0:
+            print(f'{datetime.now()}: {gen_ix}: {len(state)}: {pot_zero_ix}')
 
         new_state = '..'
         for i in range(2, len(state) - 2):
@@ -52,9 +51,12 @@ if __name__ == '__main__':
 
     print(f'{str(gen_ix + 1).zfill(2)}: {state}')
 
+    target_generation_count = 50000000000
+    pot_offset = 50000000000 - generation_count
+
     counter = 0
     for i in range(len(state)):
         if state[i] == '#':
-            counter += i - pot_zero_ix
+            counter += i - pot_zero_ix + pot_offset
 
     print(f'Sum of plant pot ixs: {counter}')
