@@ -16,6 +16,8 @@ if __name__ == '__main__':
         grid.append(list(line))
 
     characters = {}
+    # Via trial and error
+    elf_attack = 34
     # Find all characters on the grid
     for y_ix in range(len(grid)):
         for x_ix in range(len(grid[y_ix])):
@@ -26,6 +28,7 @@ if __name__ == '__main__':
                     'health': 200,
                     'x': x_ix,
                     'y': y_ix,
+                    'attack': 3 if cur_symbol == 'G' else elf_attack
                 }
 
     turn_counter = 0
@@ -77,11 +80,14 @@ if __name__ == '__main__':
                 # Attack
                 target_enemy = adjacent_enemies[0]
 
-                target_enemy['health'] -= 3
+                target_enemy['health'] -= character['attack']
                 characters[target_enemy['id']] = target_enemy
 
                 # If the enemy died, remove them from the grid to not confuse the pathfinding algorith,.
                 if target_enemy['health'] <= 0:
+                    if target_enemy['type'] == 'E':
+                        print('an elf died')
+                        exit()
                     grid[target_enemy['y']][target_enemy['x']] = '.'
 
                 # If this character attacked, it doesn't take further action this turn.
@@ -182,11 +188,14 @@ if __name__ == '__main__':
                     # Attack
                     target_enemy = adjacent_enemies[0]
 
-                    target_enemy['health'] -= 3
+                    target_enemy['health'] -= character['attack']
                     characters[target_enemy['id']] = target_enemy
 
                     # If the enemy died, remove them from the grid to not confuse the pathfinding algorith,.
                     if target_enemy['health'] <= 0:
+                        if target_enemy['type'] == 'E':
+                            print('an elf died')
+                            exit()
                         grid[target_enemy['y']][target_enemy['x']] = '.'
 
                     # If this character attacked, it doesn't take further action this turn.
