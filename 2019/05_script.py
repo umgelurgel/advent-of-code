@@ -5,12 +5,19 @@ if __name__ == '__main__':
 
     registers = [int(x) for x in lines.split(',')]
 
-    user_input = 1
+    # for part 1
+    # user_input = 1
+    # fort part 2
+    user_input = 5
 
     ADD_OP = 1
     MULT_OP = 2
     SAVE_OP = 3
     OUTPUT_OP = 4
+    JUMP_TRUE_OP = 5
+    JUMP_FALSE_OP = 6
+    LESS_THAN_OP = 7
+    EQUALS_OP = 8
     BREAK_OP = 99
 
     POSITION_MODE = 0
@@ -64,6 +71,37 @@ if __name__ == '__main__':
             output_ix = registers[index + 1]
             print(f'outputting: {registers[output_ix]}')
             index += 2
+        elif opcode == JUMP_TRUE_OP:
+            condition = get_operand(first_param_mode, index+1, registers)
+            instruction_pointer = get_operand(second_param_mode, index+2, registers)
+
+            if condition != 0:
+                index = instruction_pointer
+            else:
+                index += 3
+        elif opcode == JUMP_FALSE_OP:
+            condition = get_operand(first_param_mode, index + 1, registers)
+            instruction_pointer = get_operand(second_param_mode, index + 2, registers)
+
+            if condition == 0:
+                index = instruction_pointer
+            else:
+                index += 3
+        elif opcode == LESS_THAN_OP:
+            left = get_operand(first_param_mode, index + 1, registers)
+            right = get_operand(second_param_mode, index + 2, registers)
+            target_ix = registers[index + 3]
+
+            registers[target_ix] = int(left < right)
+            index += 4
+
+        elif opcode == EQUALS_OP:
+            left = get_operand(first_param_mode, index + 1, registers)
+            right = get_operand(second_param_mode, index + 2, registers)
+            target_ix = registers[index + 3]
+
+            registers[target_ix] = int(left == right)
+            index += 4
         else:
             print('error!')
             break
