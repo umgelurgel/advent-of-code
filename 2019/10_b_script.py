@@ -4,7 +4,7 @@ from math import gcd, atan2, pi
 from functools import partial
 
 if __name__ == '__main__':
-    with open("10_input_test.txt","r") as file:
+    with open("10_input.txt","r") as file:
         lines = [line for line in file.read().split('\n') if line]
 
     # get a list of all asteroids
@@ -42,9 +42,9 @@ if __name__ == '__main__':
     best_coordinates = None
 
     # The best asteroid in the example data
-    asteroids = deque([(11,13)])
+    # asteroids = deque([(11,13)])
     # The best asteroid in the real data
-    # asteroids = deque([(34,35)])
+    asteroids = deque([(17,22)])
     # for each asteroid
     while asteroids:
         ast_x, ast_y = asteroids.popleft()

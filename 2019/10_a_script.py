@@ -3,7 +3,7 @@ from copy import deepcopy
 from math import gcd
 
 if __name__ == '__main__':
-    with open("10_input_test.txt","r") as file:
+    with open("10_input.txt","r") as file:
         lines = [line for line in file.read().split('\n') if line]
 
     # get a list of all asteroids
@@ -85,4 +85,4 @@ if __name__ == '__main__':
             max_seen = len(seen)
             best_coordinates = (ast_x, ast_y)
 
-    print(f'Best position is {ast_x}, {ast_y} with visibility of {max_seen}')
+    print(f'Best position is {best_coordinates[0]}, {best_coordinates[1]} with visibility of {max_seen}')
