@@ -3,7 +3,7 @@ from copy import deepcopy
 from math import gcd
 
 if __name__ == '__main__':
-    with open("10_input.txt","r") as file:
+    with open("10_input_test.txt","r") as file:
         lines = [line for line in file.read().split('\n') if line]
 
     # get a list of all asteroids
