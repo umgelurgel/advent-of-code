@@ -1,3 +1,6 @@
+import datetime
+
+from numpy import lcm
 
 class Vector:
     def __init__(self, x, y, z):
@@ -20,7 +23,7 @@ class Vector:
 
 
 if __name__ == '__main__':
-    with open("12_input_test.txt","r") as file:
+    with open("12_input.txt","r") as file:
         lines = [line for line in file.read().split('\n') if line]
 
     positions = []
@@ -45,66 +48,46 @@ if __name__ == '__main__':
         else:
             return 0
 
-    def total_energy(positions, velocities):
-        total = 0
-        for i in range(0, len(positions)):
-            total += positions[i].energy * velocities[i].energy
-        return total
-
-    def state_hash(positions, velocities):
+    def axis_hash(positions, velocities, axis):
         state = ''
+        if axis == 0:
+            attr_name = 'x'
+        if axis == 1:
+            attr_name = 'y'
+        if axis == 2:
+            attr_name = 'z'
+
         for i in range(0, len(positions)):
-            state += f'{positions[i]},{velocities[i]},'
-
-        return hash(state)
-
-    def list_hash(planets):
-        state = ''
-        for i in range(0, len(planets)):
-            state += f'{planets[i]},'
+            state += f'{getattr(positions[i], attr_name)},{getattr(velocities[i], attr_name)},'
 
         return hash(state)
 
     step = 0
-    states = set()
-    pos_set = set()
-    vel_set = set()
+    axis_to_check = {0,1,2}
+    axis_found = set()
+    states_by_axis = [set(), set(), set()]
+    periods = []
 
     while True:
         # debug output
-        if step % 10000 == 0:
-            print(f'After {step} steps')
-            # for i in range(0, len(positions)):
-            #     print(f'pos={positions[i]}, vel={velocities[i]}')
-            # print(f'Sum of total energy: {total_energy(positions, velocities)}')
+        if step % 100000 == 0:
+            print(f'{datetime.datetime.now().time()}: After {step} steps')
 
-        pos_hash = list_hash(positions)
-        if pos_hash in pos_set:
-            print(f'Position repeat found after {step} states')
-            for i in range(0, len(positions)):
-                print(f'pos={positions[i]}, vel={velocities[i]}')
-        else:
-            pos_set.add(pos_hash)
-
-        vel_hash = list_hash(velocities)
-        if vel_hash in vel_set:
-            print(f'Velocity repeat found after {step} states')
-            for i in range(0, len(positions)):
-                print(f'pos={positions[i]}, vel={velocities[i]}')
-        else:
-            vel_set.add(vel_hash)
-
-
-
-        current_hash = state_hash(positions, velocities)
-        if current_hash in states:
-            print(f'Repeat found after {step} states')
-            for i in range(0, len(positions)):
-                print(f'pos={positions[i]}, vel={velocities[i]}')
-
+        if not axis_to_check:
+            result = lcm.reduce(periods)
+            print(f'Planets will return where they started after {result} steps')
             break
-        else:
-            states.add(current_hash)
+
+        for axis_i in axis_to_check:
+            current_hash = axis_hash(positions, velocities, axis_i)
+            if current_hash in states_by_axis[axis_i]:
+                print(f'Repeat found for {axis_i} after {step} states')
+                axis_found.add(axis_i)
+                periods.append(step)
+            else:
+                states_by_axis[axis_i].add(current_hash)
+
+        axis_to_check -= axis_found
 
         # update velocities
         for i in range(0, len(positions)):
