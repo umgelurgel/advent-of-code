@@ -3,8 +3,12 @@ if __name__ == '__main__':
     with open("13_input.txt","r") as file:
         lines = file.read().split('\n')[0]
 
+
     # lines = '109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99'
     registers = [int(x) for x in lines.split(',')] + [0] * 100
+    # put in the quarters
+    registers[0] = 2
+
     user_input = 0
 
     ADD_OP = 1
@@ -44,6 +48,12 @@ if __name__ == '__main__':
         )
         return registers[address]
 
+    def get_paddle_x():
+        return [key[0] for key,value in tiles.items() if value == 3]
+
+    def get_ball_x():
+        return [key[0] for key,value in tiles.items() if value == 4]
+
     current_tile = []
     tiles = {}
     index = 0
@@ -78,7 +88,16 @@ if __name__ == '__main__':
             registers[target_ix] = left * right
             index += 4
         elif opcode == SAVE_OP:
-            import ipdb; ipdb.set_trace()
+            paddle_x = get_paddle_x()
+            ball_x = get_ball_x()
+
+            if paddle_x < ball_x:
+                user_input = +1
+            elif paddle_x > ball_x:
+                user_input = -1
+            else:
+                user_input = 0
+
             save_ix = get_operand_address(first_param_mode, index + 1, registers, relative_base=relative_base)
             registers[save_ix] = user_input
             index += 2
@@ -88,7 +107,10 @@ if __name__ == '__main__':
                 current_tile.append(left)
 
             if len(current_tile) == 3:
-                tiles[(current_tile[0], current_tile[1])] = current_tile[2]
+                if current_tile[0] == -1 and current_tile[1] == 0:
+                    print(f'Current score is {current_tile[2]}')
+                else:
+                    tiles[(current_tile[0], current_tile[1])] = current_tile[2]
                 current_tile = []
 
             # print(f'outputting: {left}')
