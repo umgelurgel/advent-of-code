@@ -1,7 +1,8 @@
 from collections import deque
+from math import ceil
 
 if __name__ == '__main__':
-    with open("14_input_test.txt","r") as file:
+    with open("14_input.txt","r") as file:
         lines = [line for line in file.read().split('\n') if line]
 
     reactions = {}
@@ -42,11 +43,13 @@ if __name__ == '__main__':
     resource_cache = {}
     ore_required = 0
     basic_resources = []
+    totals = {}
 
     while resources:
         print(f'Resources: {resources}')
         print(f'Cache: {resource_cache}')
         print(f'Ore so far: {ore_required}')
+        print('')
         required_quantity, resource = resources.popleft()
         entry = reactions[resource]
 
@@ -55,26 +58,22 @@ if __name__ == '__main__':
             reduce_by = min(resource_cache[resource], required_quantity)
             required_quantity -= reduce_by
             resource_cache[resource] -= reduce_by
-        if required_quantity == 0:
-            continue
+
+        reaction_quantity = entry['quantity']
+        reaction_count = ceil(required_quantity / reaction_quantity)
+
+        produced_quantity = reaction_count * reaction_quantity
+        if produced_quantity > required_quantity:
+            resource_cache[resource] = resource_cache.get(resource, 0) + produced_quantity - required_quantity
 
         for input in entry['inputs']:
             in_quantity, in_chemical = input
 
-            reaction_quantity = entry['quantity']
-            reaction_count = 1
-            while reaction_count * reaction_quantity < required_quantity:
-                reaction_count += 1
-
-            produced_quantity = reaction_count * reaction_quantity
-            if produced_quantity > required_quantity:
-                resource_cache[resource] = resource_cache.get(resource, 0) + produced_quantity - required_quantity
-
             if in_chemical == 'ORE':
-                # basic_resources.append((reaction_count, in_chemical))
                 ore_required += in_quantity * reaction_count
             else:
                 in_quantity_required = in_quantity * reaction_count
+
                 if in_chemical in resource_cache:
                     reduce_by = min(resource_cache[in_chemical], in_quantity_required)
                     in_quantity_required -= reduce_by
@@ -84,13 +83,6 @@ if __name__ == '__main__':
                     resources.append((in_quantity_required, in_chemical))
                     resources = consolidate(resources)
 
-    # # reduce resources
-    # basic_resources = consolidate(basic_resources)
-    #
-    # # get ORE requirements
-    # ore_required = 0
-    # for quantity, resource in basic_resources:
-    #     import ipdb; ipdb.set_trace()
-
     print(ore_required)
+
 
