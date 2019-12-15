@@ -194,7 +194,7 @@ if __name__ == '__main__':
                     next_pos = (current_pos[0] - 1, current_pos[1])
 
                 tiles[current_pos] = '.'
-                tiles[next_pos] = '$'
+                tiles[next_pos] = 'O'
                 # current_pos = next_pos
                 import ipdb; ipdb.set_trace()
             else:
