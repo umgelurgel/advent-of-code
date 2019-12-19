@@ -8,10 +8,6 @@ if __name__ == '__main__':
 
     tiles = [list(line) for line in lines]
 
-    UP = 0
-    RIGHT = 1
-    DOWN = 2
-    LEFT = 3
 
     direction = UP
     # find robot:
@@ -311,4 +307,3 @@ if __name__ == '__main__':
             index += 2
         else:
             print('error!')
-
